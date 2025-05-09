@@ -5,6 +5,7 @@ import {
     ControlBar,
     GridLayout,
     LiveKitRoom,
+    VideoConference,
     ParticipantTile,
     RoomAudioRenderer,
     useTracks
@@ -78,6 +79,7 @@ export function MediaRoom({ serverId, chatId, video, audio }: MediaRoomProps) {
 			{/* Controls for the user to start/stop audio, video, and screen
       share tracks and to leave the room. */}
 			<ControlBar />
+			<VideoConference />
 		</LiveKitRoom>
 	);
 }
