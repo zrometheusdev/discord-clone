@@ -5,17 +5,16 @@ import {
     ControlBar,
     GridLayout,
     LiveKitRoom,
-    VideoConference,
     ParticipantTile,
     RoomAudioRenderer,
-    useTracks
+    useTracks,
+    VideoConference
 } from "@livekit/components-react";
 import "@livekit/components-styles";
 import { Track } from "livekit-client";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
 
 interface MediaRoomProps {
 	serverId: string;
@@ -37,10 +36,8 @@ export function MediaRoom({ serverId, chatId, video, audio }: MediaRoomProps) {
 			user?.primaryEmailAddress?.emailAddress.split("@")[0];
 		if (!name) return;
 		(async () => {
-			console.log("resp");
 			try {
 				const resp = await fetch(`/api/get-participant-token?room=${chatId}&username=${name}`);
-
 				const data = await resp.json();
 				setToken(data.token);
 			} catch (e) {
@@ -68,25 +65,19 @@ export function MediaRoom({ serverId, chatId, video, audio }: MediaRoomProps) {
 			onDisconnected={() => {
 				router.push(`/servers/${serverId}`);
 			}}
-			// Use the default LiveKit theme for nice styles.
 			data-lk-theme="default"
 			className="flex flex-col flex-1 h-[80%]"
 		>
-			{/* Your custom component with basic video conferencing functionality. */}
 			<MyVideoConference />
-			{/* The RoomAudioRenderer takes care of room-wide audio for you. */}
-			<RoomAudioRenderer />
-			{/* Controls for the user to start/stop audio, video, and screen
-      share tracks and to leave the room. */}
-			<ControlBar />
+			{/* Ready-to-use LiveKit UI with default buttons */}
 			<VideoConference />
+			<RoomAudioRenderer />
+			<ControlBar />
 		</LiveKitRoom>
 	);
 }
 
 function MyVideoConference() {
-	// `useTracks` returns all camera and screen share tracks. If a user
-	// joins without a published camera track, a placeholder track is returned.
 	const tracks = useTracks(
 		[
 			{ source: Track.Source.Camera, withPlaceholder: true },
@@ -95,9 +86,7 @@ function MyVideoConference() {
 		{ onlySubscribed: false }
 	);
 	return (
-		<GridLayout tracks={tracks} >
-			{/* The GridLayout accepts zero or one child. The child is used
-      as a template to render all passed in tracks. */}
+		<GridLayout tracks={tracks}>
 			<ParticipantTile />
 		</GridLayout>
 	);
